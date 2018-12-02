@@ -1,3 +1,4 @@
+socket = io.connect();
 var grassArr = [];
 var xotaker = [];
 var gishatic = [];
@@ -9,8 +10,24 @@ var exanak = "garun";
 var side = 25;
 var z = 76;
 var m = 40;
+
 var grassColor = "green";
 var dekoraciaColor = "blue";
+var hoxColor = "red";
+
+
+function handleSubmit(evt) {
+    var stat = [
+        [grassArr.length],
+        [year],
+        
+    ];
+    socket.emit("send data", stat);
+}
+
+
+
+
 
 setInterval(function () {
     if (exanak == "garun") {
@@ -30,6 +47,7 @@ setInterval(function () {
 }, 2000);
 
 function setup() {
+
     if (exanak == "garun") {
         frameRate(20)
     }
@@ -45,7 +63,21 @@ function setup() {
     }
 
 
-    
+    if (exanak == "dzmer") {
+        frameRate(5)
+    }
+    else if (exanak == "garun") {
+        frameRate(15)
+
+    }
+    else if (exanak == "amar") {
+        frameRate(20)
+    }
+    else if (exanak == "ashun") {
+        frameRate(10)
+    }
+
+
     for (var y = 0; y < m; y++) {
         matrix[y] = [];
 
@@ -114,37 +146,51 @@ for (var y = 0; y < matrix.length; y++) {
             rect(x * 50, y * 50, 50, 50);
         }
         else if (matrix[y][x] == 5) {
-            fill("brown");
+            fill(hoxColor);
             rect(x * 50, y * 50, 50, 50);
         }
     }
 }
 
 
-
 function draw() {
-    
-        if(exanak == "dzmer"){
-            grassColor = "white";
-            dekoraciaColor = "lightblue";
-        }
-        else if(exanak == "amar"){
-            grassColor = "green";
-            dekoraciaColor = "blue";
-        }
-        else if(exanak == "ashun"){
-            grassColor = "#FFD700";
-            dekoraciaColor = "blue";
-            
-        }
-        else{
-            grassColor = "lightgreen";
-            dekoraciaColor = "blue";
-        }
+    Stats = {
+		"kanachneri qanak": grassArr.length,
+		"dexinneri qanak": xotaker.length,
+		"gazaraguynneri qanak": gishatic.length,
+		"kapuytneri qanak": dekoracia.length,
+		"karmirneri qanak": hox.length
+    };
+    if (frameCount%60 == 0) {
+		socket.emit("send obj", Stats);
+	}
 
-      
 
-            
+    if (exanak == "dzmer") {
+        grassColor = "white";
+        dekoraciaColor = "lightblue";
+        hoxColor = "#8B0000";
+    }
+    else if (exanak == "amar") {
+        grassColor = "green";
+        dekoraciaColor = "blue";
+        hoxColor = "#FF0000";
+    }
+    else if (exanak == "ashun") {
+        grassColor = "#FFD700";
+        dekoraciaColor = "blue";
+        hoxColor = "#FF0000";
+
+    }
+    else {
+        grassColor = "lightgreen";
+        dekoraciaColor = "blue";
+        hoxColor = "#FF0000";
+    }
+
+
+
+
 
 
 
@@ -176,12 +222,13 @@ function draw() {
                 rect(x * side, y * side, side, side);
             }
             else if (matrix[y][x] == 5) {
-                fill("brown");
+                fill(hoxColor);
                 rect(x * side, y * side, side, side);
             }
         }
-    
-}
+
+
+    }
 
 
 
@@ -240,12 +287,21 @@ function draw() {
             hox[i].sharjvel();
         }
 
-       
-     
+
+
     }
-   
-        }
-    
+    if (frameCount % 60 == 0) {
+       
+        handleSubmit();
+    }
+
+
+    fill("white");
+    rect(1090, 2, 100, 60);
+    textSize(50);
+    fill("green");
+    text(exanak, 1100, 30);
+}
 
 
 
