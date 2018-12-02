@@ -4,8 +4,9 @@ var xotaker = [];
 var gishatic = [];
 var dekoracia = [];
 var hox = [];
+var napastak = [];
 var matrix = [];
-var number = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 0, 0, 4, 0, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1];
+var number = [0, 6, 0, 6, 0, 0, 6, 0, 6, 0, 1, 2, 3, 4, 5, 0, 0, 4, 0, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 2, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1];
 var exanak = "garun";
 var side = 25;
 var z = 76;
@@ -16,11 +17,12 @@ var dekoraciaColor = "blue";
 var hoxColor = "red";
 
 
+
 function handleSubmit(evt) {
     var stat = [
         [grassArr.length],
         [year],
-        
+
     ];
     socket.emit("send data", stat);
 }
@@ -42,11 +44,13 @@ setInterval(function () {
     else if (exanak == "dzmer") {
         exanak = "garun"
     }
-    console.log(exanak);
+  
 
 }, 2000);
 
 function setup() {
+
+
 
     if (exanak == "garun") {
         frameRate(20)
@@ -109,6 +113,9 @@ function setup() {
             else if (matrix[y][x] == 5) {
                 hox.push(new Hox(x, y, 1));
             }
+            else if (matrix[y][x] == 6) {
+                napastak.push(new Napastak(x, y, 1));
+            }
 
 
         }
@@ -149,21 +156,25 @@ for (var y = 0; y < matrix.length; y++) {
             fill(hoxColor);
             rect(x * 50, y * 50, 50, 50);
         }
+        else if (matrix[y][x] == 6) {
+            fill("white");
+            rect(x * 50, y * 50, 50, 50);
+        }
     }
 }
 
 
 function draw() {
     Stats = {
-		"kanachneri qanak": grassArr.length,
-		"dexinneri qanak": xotaker.length,
-		"gazaraguynneri qanak": gishatic.length,
-		"kapuytneri qanak": dekoracia.length,
-		"karmirneri qanak": hox.length
+        "kanachneri qanak": grassArr.length,
+        "dexinneri qanak": xotaker.length,
+        "gazaraguynneri qanak": gishatic.length,
+        "kapuytneri qanak": dekoracia.length,
+        "karmirneri qanak": hox.length
     };
-    if (frameCount%60 == 0) {
-		socket.emit("send obj", Stats);
-	}
+    if (frameCount % 60 == 0) {
+        socket.emit("send obj", Stats);
+    }
 
 
     if (exanak == "dzmer") {
@@ -225,83 +236,104 @@ function draw() {
                 fill(hoxColor);
                 rect(x * side, y * side, side, side);
             }
+            else if (matrix[y][x] == 6) {
+                fill("white");
+                rect(x * side, y * side, side, side);
+            }
         }
-
 
     }
 
 
 
-    for (var i in grassArr) {
-        grassArr[i].bazmanal();
+
+
+        for (var i in grassArr) {
+            grassArr[i].bazmanal();
+        }
+        for (var i in xotaker) {
+            var norVandak = random(xotaker[i].yntrelVandak(1));
+
+            if (xotaker[i].chuteluqanak == 5) {
+                xotaker[i].mahanal(i);
+            }
+            else if (xotaker[i].uteluqanak == 5) {
+                xotaker[i].bazmanal();
+            }
+            else if (norVandak) {
+                xotaker[i].utel();
+            }
+
+            else {
+                xotaker[i].sharjvel();
+            }
+        }
+        for (var i in gishatic) {
+            var norVandak = random(gishatic[i].yntrelVandak(2));
+            if (gishatic[i].chuteluqanak == 45) {
+                gishatic[i].mahanal(i);
+            }
+            else if (gishatic[i].uteluqanak == 5) {
+                gishatic[i].bazmanal();
+            }
+            else if (norVandak) {
+                gishatic[i].utel();
+            }
+            else {
+                gishatic[i].sharjvel();
+            }
+        }
+        for (var i in dekoracia) {
+            var norVandak = random(dekoracia[i].yntrelVandak(2));
+
+            dekoracia[i].bazmanal();
+        }
+        for (var i in hox) {
+            var norVandak = random(hox[i].yntrelVandak(4));
+            if (hox[i].chuteluqanak == 5) {
+                hox[i].mahanal(i);
+            }
+            else if (hox[i].uteluqanak == 5) {
+                hox[i].bazmanal();
+            }
+            else if (norVandak) {
+                hox[i].utel();
+            }
+            else {
+                hox[i].sharjvel();
+            }
+
+
+
+        }
+        for (var i in napastak) {
+            var norVandak = random(napastak[i].yntrelVandak(2));
+            if (napastak[i].chuteluqanak == 45) {
+                napastak[i].mahanal(i);
+            }
+            else if (napastak[i].uteluqanak == 5) {
+                napastak[i].bazmanal();
+            }
+            else if (norVandak) {
+                napastak[i].utel();
+            }
+            else {
+                napastak[i].sharjvel();
+            }
+        }
+        if (frameCount % 60 == 0) {
+
+            handleSubmit();
+        }
+
+
+        fill("white");
+        rect(1090, 2, 150, 50);
+        textSize(50);
+        fill("green");
+        text(exanak, 1100, 30);
+
+
+    
     }
-    for (var i in xotaker) {
-        var norVandak = random(xotaker[i].yntrelVandak(1));
-
-        if (xotaker[i].chuteluqanak == 5) {
-            xotaker[i].mahanal(i);
-        }
-        else if (xotaker[i].uteluqanak == 5) {
-            xotaker[i].bazmanal();
-        }
-        else if (norVandak) {
-            xotaker[i].utel();
-        }
-
-        else {
-            xotaker[i].sharjvel();
-        }
-    }
-    for (var i in gishatic) {
-        var norVandak = random(gishatic[i].yntrelVandak(2));
-        if (gishatic[i].chuteluqanak == 45) {
-            gishatic[i].mahanal(i);
-        }
-        else if (gishatic[i].uteluqanak == 5) {
-            gishatic[i].bazmanal();
-        }
-        else if (norVandak) {
-            gishatic[i].utel();
-        }
-        else {
-            gishatic[i].sharjvel();
-        }
-    }
-    for (var i in dekoracia) {
-        var norVandak = random(dekoracia[i].yntrelVandak(2));
-
-        dekoracia[i].bazmanal();
-    }
-    for (var i in hox) {
-        var norVandak = random(hox[i].yntrelVandak(4));
-        if (hox[i].chuteluqanak == 5) {
-            hox[i].mahanal(i);
-        }
-        else if (hox[i].uteluqanak == 5) {
-            hox[i].bazmanal();
-        }
-        else if (norVandak) {
-            hox[i].utel();
-        }
-        else {
-            hox[i].sharjvel();
-        }
-
-
-
-    }
-    if (frameCount % 60 == 0) {
-       
-        handleSubmit();
-    }
-
-
-    fill("white");
-    rect(1090, 2, 100, 60);
-    textSize(50);
-    fill("green");
-    text(exanak, 1100, 30);
-}
-
-
 
